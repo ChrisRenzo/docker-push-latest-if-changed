@@ -215,7 +215,11 @@ def _run_in_image(image_uri: str, command: Tuple[str, ...]) -> str:
 
 def _check_output_and_print(command: Tuple[str, ...]) -> str:
     print(' '.join(command))
-    output = subprocess.check_output(command, stderr=subprocess.STDOUT, encoding='utf-8')
+    try:
+        output = subprocess.check_output(command, stderr=subprocess.STDOUT, shell=True, timeout=3, universal_newlines=True, encoding='utf-8')
+    except subprocess.CalledProcessError as exc:
+        print("Status : FAIL", exc.returncode, exc.output)
+    
     return output
 
 
